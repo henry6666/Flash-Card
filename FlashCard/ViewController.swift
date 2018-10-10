@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     var warningAlert : UIAlertController!
     
     // vars to store objects
-    var listOfObjects = [Flashcard]()
+    var listOfCards = [Flashcard]()
     var listOfViewedCars = [Flashcard]()
     var randomNumber : Int!
     var cardToPresent : Flashcard!
@@ -64,7 +64,18 @@ class ViewController: UIViewController {
     }
     
     func addCardToDatabase(question : String, answer : String) {
+        let newCard = NSEntityDescription.insertNewObject(forEntityName: "Flashcard", into: managedObjectContext) as! Flashcard
         
+        newCard.question = question
+        newCard.answer = answer
+        do {
+            try managedObjectContext.save()
+            listOfCards.append(newCard)
+            print("Flash card: \(newCard) saved to database")
+        } catch {
+            print("Could not save")
+        }
+    
     }
     
     func deleteCardFromDatabase() {
