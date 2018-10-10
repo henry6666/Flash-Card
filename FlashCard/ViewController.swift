@@ -7,15 +7,22 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController {
 
+    
+    var managedObjectContext : NSManagedObjectContext!
     
     @IBOutlet weak var lblDisplayCard: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        
+        managedObjectContext = appDelegate.persistentContainer.viewContext
+        
+        
     }
 
     @IBAction func addCard(_ sender: UIButton) {
