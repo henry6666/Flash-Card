@@ -35,12 +35,32 @@ class ViewController: UIViewController {
     }
 
     @IBAction func addCard(_ sender: UIButton) {
+        addCardAlert = UIAlertController(title: "Add new card", message: "Enter a question and an answer", preferredStyle: UIAlertControllerStyle.alert)
+        addCardAlert.addTextField { (textField1) in
+           textField1.placeholder = "Enter a question here!"
+        }
+        
+        addCardAlert.addTextField { (textField2) in
+            textField2.placeholder = "Enter answer here!"
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil)
+        
+        let addCardAction = UIAlertAction(title: "Add Card", style: UIAlertActionStyle.default) { (action) in
+            self.addCardToDatabase(question: self.addCardAlert.textFields![0].text!, answer: self.addCardAlert.textFields![1].text!)
+        }
+        
+        self.addCardAlert.addAction(cancelAction)
+        self.addCardAlert.addAction(addCardAction)
+        
+        self.present(self.addCardAlert, animated: true, completion: nil)
     }
     
     @IBAction func deleteCard(_ sender: UIButton) {
+        
     }
     
     @IBAction func tapLabel(_ sender: UITapGestureRecognizer) {
+        
     }
     
     func addCardToDatabase(question : String, answer : String) {
@@ -59,9 +79,9 @@ class ViewController: UIViewController {
         
     }
     
-    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-        <#code#>
-    }
+//    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+//
+//    }
 }
 
 
