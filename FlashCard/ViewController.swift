@@ -13,8 +13,17 @@ class ViewController: UIViewController {
 
     
     var managedObjectContext : NSManagedObjectContext!
-    
     @IBOutlet weak var lblDisplayCard: UILabel!
+    // alerts
+    var addCardAlert : UIAlertController!
+    var deleteCardAlert : UIAlertController!
+    var warningAlert : UIAlertController!
+    
+    // vars to store objects
+    var listOfObjects = [Flashcard]()
+    var listOfViewedCars = [Flashcard]()
+    var randomNumber : Int!
+    var cardToPresent : Flashcard!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,5 +43,33 @@ class ViewController: UIViewController {
     @IBAction func tapLabel(_ sender: UITapGestureRecognizer) {
     }
     
+    func addCardToDatabase(question : String, answer : String) {
+        
+    }
+    
+    func deleteCardFromDatabase() {
+        
+    }
+    
+    func fetchCards() {
+        
+    }
+    
+    func loadFlashCard() {
+        
+    }
+    
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        <#code#>
+    }
 }
+
+
+
+
+
+
+
+
+
 
