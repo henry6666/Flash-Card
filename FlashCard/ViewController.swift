@@ -30,7 +30,8 @@ class ViewController: UIViewController {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         managedObjectContext = appDelegate.persistentContainer.viewContext
-        
+        fetchCards()
+        loadFlashCard()
         
     }
 
@@ -83,10 +84,28 @@ class ViewController: UIViewController {
     }
     
     func fetchCards() {
+        let fetchCard : NSFetchRequest<Flashcard> = Flashcard.fetchRequest()
         
+        do {
+            listOfCards = try managedObjectContext.fetch(fetchCard)
+            print("Flash cards fetched successfuly...")
+        } catch {
+            print("Could not fetch flash cards...")
+        }
     }
     
     func loadFlashCard() {
+        randomNumber = Int(arc4random_uniform(UInt32(listOfCards.count)))
+        cardToPresent = listOfCards[randomNumber]
+        if listOfViewedCars.contains(cardToPresent) {
+            loadFlashCard()
+        } else {
+            listOfViewedCars.append(cardToPresent)
+        }
+        if listOfViewedCars == listOfCards {
+            listOfViewedCars.removeAll()
+        }
+        lblDisplayCard.text = cardToPresent.question!
         
     }
     
