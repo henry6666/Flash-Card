@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     
     // vars to store objects
     var listOfCards = [Flashcard]()
-    var listOfViewedCars = [Flashcard]()
+    var listOfViewedCards = [Flashcard]()
     var randomNumber : Int!
     var cardToPresent : Flashcard!
     
@@ -31,7 +31,7 @@ class ViewController: UIViewController {
         
         managedObjectContext = appDelegate.persistentContainer.viewContext
         fetchCards()
-        loadFlashCard()
+    
         
     }
 
@@ -57,11 +57,47 @@ class ViewController: UIViewController {
     }
     
     @IBAction func deleteCard(_ sender: UIButton) {
+        deleteCardAlert = UIAlertController(title: "Delete Card", message: "Are you sure to delete card?", preferredStyle: .alert)
+   
+        let cancelAction = UIAlertAction(title: "NO", style: .default) { (action) in
+            
+        }
+        
+        let deleteAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.destructive) { (action) in
+            
+        }
+        
+        deleteCardAlert.addAction(cancelAction)
+        deleteCardAlert.addAction(deleteAction)
+        
+        warningAlert = UIAlertController(title: "Hi", message: "You must to select a card to delete", preferredStyle: UIAlertControllerStyle.alert)
+        let dismissAction = UIAlertAction(title: "Dismiss!", style: .cancel) { (action) in
+            
+        }
+        
+        warningAlert.addAction(dismissAction)
+        
+        if cardToPresent == nil {
+            present(warningAlert, animated: true, completion: nil)
+        } else {
+            present(deleteCardAlert, animated: true, completion: nil)
+        }
+        
         
     }
     
     @IBAction func tapLabel(_ sender: UITapGestureRecognizer) {
-        
+        if cardToPresent != nil {
+            switch lblDisplayCard.text! {
+            case cardToPresent.answer!:
+                lblDisplayCard.text = cardToPresent.question
+            case cardToPresent.question!:
+                lblDisplayCard.text = cardToPresent.answer
+                
+            default:
+                break
+            }
+        }
     }
     
     func addCardToDatabase(question : String, answer : String) {
@@ -80,7 +116,26 @@ class ViewController: UIViewController {
     }
     
     func deleteCardFromDatabase() {
+        if cardToPresent != nil {
+            managedObjectContext.delete(cardToPresent)
+            
+        }
         
+        do {
+            try managedObjectContext.save()
+            print("Flashcard deleted from database...")
+           
+        } catch {
+            print("Flashcard could not be deleted from database...")
+        }
+        fetchCards()
+        
+        if !listOfCards.isEmpty {
+            loadFlashCard()
+        } else {
+            cardToPresent = nil
+            lblDisplayCard.text = "Add some more cards!"
+        }
     }
     
     func fetchCards() {
@@ -95,23 +150,35 @@ class ViewController: UIViewController {
     }
     
     func loadFlashCard() {
+        var isTheSame = true
+        for card in listOfCards {
+            if !listOfViewedCards.contains(card) {
+                isTheSame = false
+            }
+        }
+        if isTheSame {
+            listOfViewedCards.removeAll()
+        }
         randomNumber = Int(arc4random_uniform(UInt32(listOfCards.count)))
         cardToPresent = listOfCards[randomNumber]
-        if listOfViewedCars.contains(cardToPresent) {
+        if listOfViewedCards.contains(cardToPresent) {
             loadFlashCard()
         } else {
-            listOfViewedCars.append(cardToPresent)
+            listOfViewedCards.append(cardToPresent)
         }
-        if listOfViewedCars == listOfCards {
-            listOfViewedCars.removeAll()
-        }
+        
         lblDisplayCard.text = cardToPresent.question!
         
     }
     
-//    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
-//
-//    }
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+        if !listOfCards.isEmpty {
+            loadFlashCard()
+            
+        } else {
+            lblDisplayCard.text = "Add some cards..."
+        }
+    }
 }
 
 
